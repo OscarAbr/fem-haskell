@@ -116,3 +116,19 @@ funcMotif (i,j)
     | i == j+1  = 1.0
     | i == j-1  = 1.0 
     | otherwise = 0.0
+
+
+removeIndex :: Double -> [a] -> [a]
+removeIndex 0 (x:xs) =  xs
+removeIndex i (x:xs) = x : (removeIndex (i-1) xs)
+
+removeCross :: Double -> Matrix -> Matrix
+removeCross x m  = removeIndex x (map (removeIndex x) m)
+
+subMatrix :: [Double] -> Matrix -> Matrix
+subMatrix [] m = m
+subMatrix (x:xs) m = removeCross x (subMatrix xs m)
+
+removeIndexes :: [Double] -> [Double] -> [Double]
+removeIndexes [] l = l
+removeIndexes (x:xs) l = removeIndexes xs (removeIndex x l)

@@ -27,6 +27,8 @@ partiel x y locale n = map(\j -> line j 0 n) [0..(n-1)]
             | (i == 2*y+1 && j == 2*x+1)  = coeff 3 1 locale : line i (j+1) n
             | otherwise = 0.0 : line i (j+1) n
 
+
+-- Rigidity matrix
 total::[[Double]] -> [[Double]] -> Matrix
 total [] points = genMatrix (\(x,y) -> 0.0) (convToDouble(length points)*2)
 total (x:liaisons) points = plus (partiel (head x) (last x) (localRigidity points 1.0 (head x) (last x)) (convToDouble(length points)*2)) (total liaisons points)
@@ -75,3 +77,28 @@ listLiaison = [[0.0,1],[1.0,2.0]]
 
 example::String
 example = "Je suis dans la branche graph"
+
+deplacementMatrix :: Matrix -> Matrix -> Matrix
+deplacementMatrix k f = mult (inverse k) f
+
+-- to be improved...
+insertZeros :: [Double] -> [Double]
+insertZeros m = [0.0,0.0] ++ m ++ [0.0,0.0]
+
+csvX :: [Double] -> [Double]
+csvX [] = []
+csvX l = head (take 2 l) : csvX (drop 2 l)
+
+csvY :: [Double] -> [Double]
+csvY [] = []
+csvY l = last (take 2 l) : csvY (drop 2 l)
+
+k = total listLiaison listPoint
+k2 = subMatrix[0,1,4,5] k
+
+f2 = [[0.1],[0.0]]
+
+ui = concat (deplacementMatrix k2 f2)
+u = insertZeros ui
+
+resultat = zipWith (+) (concat listPoint) u
