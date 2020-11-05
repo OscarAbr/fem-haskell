@@ -58,8 +58,8 @@ trans ([]:_) = []
 trans xs     = (map head xs):(trans (map tail xs))
 
 findIndex :: Double -> [a] -> a
-findIndex 0 (x:xs) = x
-findIndex i (x:xs) = findIndex (i-1) xs
+findIndex 0 (x:_) = x
+findIndex i (_:xs) = findIndex (i-1) xs
 
 -- obtenir un coefficient de coordonnées (i,j) sur une matrice m
 coeff :: Double -> Double -> Matrix -> Double
@@ -132,3 +132,4 @@ subMatrix (x:xs) m = removeCross x (subMatrix xs m)
 removeIndexes :: [Double] -> [Double] -> [Double]
 removeIndexes [] l = l
 removeIndexes (x:xs) l = removeIndexes xs (removeIndex x l)
+
