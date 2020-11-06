@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b41e84157c6c3992ed9b2656ad9cb90f78756fc98ffab545cd8fbeee9d0f4bf2
+-- hash: 3dc69a8c8df2056054d7172a8b79a110f39ebe7fb060432681e56c70e7a90a19
 
 name:           fem
 version:        0.1.0.0
@@ -37,7 +37,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
-      , threepenny-gui
+    , threepenny-gui
   default-language: Haskell2010
 
 executable fem-exe

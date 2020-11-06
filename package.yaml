@@ -24,6 +24,8 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+  - threepenny-gui
 
 executables:
   fem-exe:
