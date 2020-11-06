@@ -3,7 +3,14 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: threepenny-gui-0.9.0.0@sha256:7c46aeb725b6a8a9bb5d6dae20d48e38be802ffd0760df8219885fbd8fa6cad2,9531
+    pantry-tree:
+      size: 4283
+      sha256: 53eaa82035ab1e6ee63e6015537598c09f669cf59c6a12a6584e7f1a99cc42cc
+  original:
+    hackage: threepenny-gui-0.9.0.0
 snapshots:
 - completed:
     size: 532177
