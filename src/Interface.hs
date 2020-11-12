@@ -6,6 +6,8 @@ import qualified Graphics.UI.Threepenny      as UI
 import           Graphics.UI.Threepenny.Core
 import Data.IORef
 import Control.Monad
+import Fem
+import Operations
 {-----------------------------------------------------------------------------
     Threepenny
     Hello world!
@@ -23,26 +25,29 @@ setup :: Window -> UI ()
 setup window = do
     return window # set title "Canvas - Examples"
 
+
     canvas <- UI.canvas
         # set UI.height canvasSize
         # set UI.width  canvasSize
-        # set style [("border", "solid black 1px"), ("background", "#eee")]
+        # set style [("border", "solid black 1px"), ("background", "#eee"),("body","center")]
+
 
     drawRects <- UI.button #+ [string "Add some rectangles."]
-    drawText  <- UI.button #+ [string "Add text."]
-    drawGraph <- UI.button #+ [string "Add graph."]
+    drawTriangleForce  <- UI.button #+ [string "Apply force"]
+    drawTriangle <- UI.button #+ [string "Add graph."]
     drawPie   <- UI.button #+ [string "Must have pie!"]
     clear     <- UI.button #+ [string "Clear the canvas."]
 
     getBody window #+
         [ column [element canvas]
-        , column[element drawRects], element drawText, element drawGraph
-        , element drawPie  , element clear
+        , element drawTriangle
+        , column[element clear]
         ]
 
-    on UI.click clear $ const $
+    on UI.click clear $ const $ do
         canvas # UI.clearCanvas
-
+        delete drawTriangleForce
+       
     -- draw a pie chart
     on UI.click drawPie $ const $ do
         let
@@ -92,22 +97,25 @@ setup window = do
             canvas # set' UI.fillStyle (UI.htmlColor color)
             canvas # UI.fillRect (x,y) w h
 
-    -- draw some text
-    on UI.click drawText $ const $ do
-        return canvas
-            # set UI.textFont    "30px sans-serif"
-            # set UI.strokeStyle "gray"
-            # set UI.fillStyle   (UI.htmlColor "black")
-
-        canvas # UI.strokeText "is awesome" (141,61)
-        canvas # UI.fillText   "is awesome" (140,60)
-
-    -- draw the graph
-    on UI.click drawGraph $ const $ do
+    -- draw triangle force
+    on UI.click drawTriangleForce $ const $ do
         canvas # set' UI.strokeStyle "red"
         canvas # UI.beginPath
-        canvas # UI.moveTo (0,0)
-        canvas # UI.lineTo (30,30)
+        --canvas # UI.moveTo (0,0)
+        forM_ (forInterface resultat) $ \(x,y) -> do
+            canvas # UI.lineTo (100*x,fromIntegral canvasSize - 100*y)
         canvas # UI.closePath
-        canvas # UI.fill
         canvas # UI.stroke
+        
+
+    -- draw the triangle
+    on UI.click drawTriangle $ const $ do
+        getBody window #+ [element drawTriangleForce]
+        canvas # set' UI.strokeStyle "green"
+        canvas # UI.beginPath
+        --canvas # UI.moveTo (0,0)
+        forM_ (forInterface beforeResultat) $ \(x,y) -> do
+            canvas # UI.lineTo (100*x,fromIntegral canvasSize - 100*y)
+        canvas # UI.closePath
+        canvas # UI.stroke
+        

@@ -102,3 +102,9 @@ ui = concat (deplacementMatrix k2 f2)
 u = insertZeros ui
 
 resultat = zipWith (+) (concat listPoint) u
+
+beforeResultat = concat listPoint
+
+forInterface:: [Double] -> [(Double,Double)]
+forInterface [] = []
+forInterface l = (head (take 2 l), last (take 2 l)) : (forInterface (drop 2 l))
