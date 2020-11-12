@@ -108,3 +108,6 @@ beforeResultat = concat listPoint
 forInterface:: [Double] -> [(Double,Double)]
 forInterface [] = []
 forInterface l = (head (take 2 l), last (take 2 l)) : (forInterface (drop 2 l))
+
+zoomPoint:: (Double,Double)-> Int -> (Double, Double)
+zoomPoint (x,y) z = (100*x,fromIntegral z - 100*y)

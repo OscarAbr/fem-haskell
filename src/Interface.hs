@@ -7,7 +7,10 @@ import           Graphics.UI.Threepenny.Core
 import Data.IORef
 import Control.Monad
 import Fem
-import Operations
+    ( beforeResultat, forInterface, listLiaison, resultat, zoomPoint )
+import Example2
+import Operations (findIndex)
+
 {-----------------------------------------------------------------------------
     Threepenny
     Hello world!
@@ -27,26 +30,30 @@ setup window = do
 
 
     canvas <- UI.canvas
-        # set UI.height canvasSize
-        # set UI.width  canvasSize
+        # set UI.height (2*canvasSize)
+        # set UI.width  (3*canvasSize)
         # set style [("border", "solid black 1px"), ("background", "#eee"),("body","center")]
 
 
     drawRects <- UI.button #+ [string "Add some rectangles."]
-    drawTriangleForce  <- UI.button #+ [string "Apply force"]
-    drawTriangle <- UI.button #+ [string "Add graph."]
+    drawTriangleForce  <- UI.button #+ [string "Apply force on triangle"]
+    drawTriangle <- UI.button #+ [string "Add triangle."]
+    drawGraph <- UI.button #+ [string "Add graph"]
+    drawGraphForce <- UI.button #+ [string "Add force on graph"]
     drawPie   <- UI.button #+ [string "Must have pie!"]
     clear     <- UI.button #+ [string "Clear the canvas."]
 
     getBody window #+
         [ column [element canvas]
         , element drawTriangle
+        , element drawGraph
         , column[element clear]
         ]
 
     on UI.click clear $ const $ do
         canvas # UI.clearCanvas
         delete drawTriangleForce
+        delete drawGraphForce
        
     -- draw a pie chart
     on UI.click drawPie $ const $ do
@@ -101,21 +108,35 @@ setup window = do
     on UI.click drawTriangleForce $ const $ do
         canvas # set' UI.strokeStyle "red"
         canvas # UI.beginPath
-        --canvas # UI.moveTo (0,0)
-        forM_ (forInterface resultat) $ \(x,y) -> do
-            canvas # UI.lineTo (100*x,fromIntegral canvasSize - 100*y)
-        canvas # UI.closePath
+        forM_ listLiaison $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface resultat)) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface resultat)) canvasSize)
         canvas # UI.stroke
         
 
     -- draw the triangle
     on UI.click drawTriangle $ const $ do
         getBody window #+ [element drawTriangleForce]
+        canvas # set' UI.strokeStyle "blue"
+        canvas # UI.beginPath
+        forM_ listLiaison $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface beforeResultat)) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface beforeResultat)) canvasSize)
+        canvas # UI.stroke
+    
+    on UI.click drawGraph $ const $ do
+        getBody window #+ [element drawGraphForce]
         canvas # set' UI.strokeStyle "green"
         canvas # UI.beginPath
-        --canvas # UI.moveTo (0,0)
-        forM_ (forInterface beforeResultat) $ \(x,y) -> do
-            canvas # UI.lineTo (100*x,fromIntegral canvasSize - 100*y)
-        canvas # UI.closePath
+        forM_ listLiaisonex2 $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat listPointex2))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat listPointex2))) canvasSize)
         canvas # UI.stroke
-        
+
+    on UI.click drawGraphForce $ const $ do
+        canvas # set' UI.strokeStyle "red"
+        canvas # UI.beginPath
+        forM_ listLiaisonex2 $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface resultat2)) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface resultat2)) canvasSize)
+        canvas # UI.stroke
