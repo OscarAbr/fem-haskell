@@ -3,7 +3,25 @@ module Interface
 where
 
 import qualified Graphics.UI.Threepenny      as UI
-import           Graphics.UI.Threepenny.Core
+import Graphics.UI.Threepenny.Core
+    ( defaultConfig,
+      (#),
+      (#+),
+      (#.),
+      column,
+      element,
+      getBody,
+      on,
+      set,
+      string,
+      style,
+      title,
+      delete,
+      startGUI,
+      Config(jsStatic),
+      ReadWriteAttr(set'),
+      UI,
+      Window )
 import Data.IORef
 import Control.Monad
 import Fem
@@ -20,7 +38,10 @@ import Operations (findIndex)
 
 
 interface = do
-    startGUI defaultConfig setup
+    startGUI defaultConfig
+        { 
+            jsStatic = Just "static"
+        } setup
 
 canvasSize = 400
 
@@ -28,11 +49,12 @@ setup :: Window -> UI ()
 setup window = do
     return window # set title "Canvas - Examples"
 
+    UI.addStyleSheet window "style.css"
 
     canvas <- UI.canvas
         # set UI.height (2*canvasSize)
         # set UI.width  (3*canvasSize)
-        # set style [("border", "solid black 1px"), ("background", "#eee"),("body","center")]
+        # set style [("border", "solid black 1px"), ("background", "#eee")]
 
 
     drawRects <- UI.button #+ [string "Add some rectangles."]
