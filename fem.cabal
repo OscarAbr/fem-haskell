@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3dc69a8c8df2056054d7172a8b79a110f39ebe7fb060432681e56c70e7a90a19
+-- hash: 73f040ff63fa7edbeb13979b267c2f80821aa586e479d34c1849a3b9ecb42f60
 
 name:           fem
 version:        0.1.0.0
@@ -28,7 +28,7 @@ source-repository head
 library
   exposed-modules:
       Fem
-      Hello
+      Interface
       Lib
       Operations
   other-modules:
