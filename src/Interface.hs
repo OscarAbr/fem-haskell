@@ -44,11 +44,18 @@ setup window = do
     clear     <- UI.button #+ [string "Clear the canvas."]
 
     getBody window #+
-        [ column [element canvas]
-        , element drawTriangle
-        , element drawGraph
-        , column[element clear]
+        [ UI.div #. "wrapper" #+
+            [UI.div #. "canvas_div" #+ [element canvas]
+            , UI.div #. "buttons_div " #+
+                    [ column [element canvas]
+                    , element drawTriangle
+                    , element drawGraph
+                    , column[element clear]
+                    ]
+            ]
         ]
+        
+              
 
     on UI.click clear $ const $ do
         canvas # UI.clearCanvas
