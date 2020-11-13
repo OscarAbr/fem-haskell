@@ -70,7 +70,7 @@ localRigidity positionMatrix rigidityK i j = multk (rigidityK/(distance(x0,y0) (
        n = concat[minusn1, n1]  
 
 
-listPoints = [[0.0,0.0],[1.0,1.73],[2.0,0.0]]
+listPoint = [[0.0,0.0],[1.0,1.73],[2.0,0.0]]
 
 
 listLiaison = [[0.0,1],[1.0,2.0]]
