@@ -101,6 +101,7 @@ setup window = do
    
     on UI.click clear $ const $ do
         canvas # UI.clearCanvas
+        canvas # UI.beginPath
         delete drawTriangleForce
         delete drawGraphForce
        
