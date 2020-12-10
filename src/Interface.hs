@@ -1,7 +1,7 @@
 module Interface
 (interface) 
 where
-
+import Data.IORef
 import qualified Graphics.UI.Threepenny      as UI
 import Graphics.UI.Threepenny.Core
     ( defaultConfig,
@@ -22,7 +22,7 @@ import Graphics.UI.Threepenny.Core
       ReadWriteAttr(set'),
       UI,
       Window )
-import Data.IORef
+
 import Control.Monad
 import Fem
     ( beforeResultat, forInterface, listLiaison, resultat, zoomPoint )
@@ -35,22 +35,23 @@ import Operations (findIndex)
 ------------------------------------------------------------------------------}
 
 -- imports
-
+type Point = (Double,Double)
 
 interface = do
     startGUI defaultConfig
         { 
             jsStatic = Just "static"
         } setup
-
+    putStrLn "setup done"
 canvasSize = 400
 
 setup :: Window -> UI ()
 setup window = do
+    
     return window # set title "Canvas - Examples"
 
     UI.addStyleSheet window "style.css"
-
+    --pointsRef <- UI.liftIO (newIORef [] :: IO (IORef [Point]))
     canvas <- UI.canvas
         # set UI.height (2*canvasSize)
         # set UI.width  (3*canvasSize)
@@ -64,6 +65,7 @@ setup window = do
     drawGraphForce <- UI.button #+ [string "Add force on graph"]
     drawPie   <- UI.button #+ [string "Must have pie!"]
     clear     <- UI.button #+ [string "Clear the canvas."]
+    button    <- UI.button #+ [string "fetch points."]
 
     getBody window #+
         [ UI.div #. "wrapper" #+
@@ -72,15 +74,34 @@ setup window = do
                     [ column [element canvas]
                     , element drawTriangle
                     , element drawGraph
+                    , element button
                     , column[element clear]
+                    
                     ]
             ]
         ]
         
               
+    on UI.mousedown canvas $ \(x, y) -> do
+      --UI.liftIO $ modifyIORef' pointsRef ((x, y) :)
+      canvas # UI.lineTo (x,y)
+      canvas # UI.stroke
 
+    --on UI.click button $ const $ do
+      --points <- UI.liftIO $ readIORef pointsRef
+      --canvas # UI.beginPath
+      --canvas # UI.moveTo (head points)q
+      --canvas # UI.lineTo (last points)
+      --canvas # UI.stroke
+
+
+
+
+    
+   
     on UI.click clear $ const $ do
         canvas # UI.clearCanvas
+        canvas # UI.beginPath
         delete drawTriangleForce
         delete drawGraphForce
        

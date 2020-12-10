@@ -3,12 +3,12 @@ module Operations where
 type Matrix = [[Double]]
 
 -- comatrix(i,j) matrices de cofacteur, pour générer la comatrice ou calculer le déterminant
-cofac :: Double->Double->Matrix->Matrix
-cofac i j m = iter 0 i j m
- where iter  l i j (x:xs) = if (l==i) then xs' else x':(iter (l+1) i j xs)
-        where x' = iter2 0 i j x
-              xs'= map (iter2 0 i j) xs
-       iter2 l i j (x:xs) = if (l==j) then xs else x:(iter2 (l+1) i j xs)
+--cofac :: Double->Double->Matrix->Matrix
+--cofac i j m = iter 0 i j m
+ --where iter  l i j (x:xs) = if (l==i) then xs' else x':(iter (l+1) i j xs)
+   --     where x' = iter2 0 i j x
+    --          xs'= map (iter2 0 i j) xs
+      -- iter2 l i j (x:xs) = if (l==j) then xs else x:(iter2 (l+1) i j xs)
 
 
 -- "for" loop
@@ -133,3 +133,9 @@ removeIndexes :: [Double] -> [Double] -> [Double]
 removeIndexes [] l = l
 removeIndexes (x:xs) l = removeIndexes xs (removeIndex x l)
 
+
+--  matrices de cofacteur, pour générer la comatrice ou calculer le déterminant
+-- cofac 1 2 [[1,2,3],[4,5,6],[7,8,9]] enleve ligne 1, colonne 2
+-- => [[1.0,2.0],[7.0,8.0]]
+cofac :: Double -> Double -> Matrix -> Matrix
+cofac x y m  = removeIndex x (map (removeIndex y) m)
