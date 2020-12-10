@@ -27,6 +27,7 @@ import Control.Monad
 import Fem
     ( beforeResultat, forInterface, listLiaison, resultat, zoomPoint )
 import Example2
+import ExampleMaillage
 import Operations (findIndex)
 
 {-----------------------------------------------------------------------------
@@ -60,6 +61,10 @@ setup window = do
     drawRects <- UI.button #+ [string "Add some rectangles."]
     drawTriangleForce  <- UI.button #+ [string "Apply force on triangle"]
     drawTriangle <- UI.button #+ [string "Add triangle."]
+    drawMeshedTriangleForce1  <- UI.button #+ [string "Apply force on meshed (once) triangle"]
+    drawMeshedTriangle1 <- UI.button #+ [string "Add meshed(once) triangle."]
+    drawMeshedTriangleForce2  <- UI.button #+ [string "Apply force on meshed (twice) triangle"]
+    drawMeshedTriangle2 <- UI.button #+ [string "Add meshed(twice) triangle."]
     drawGraph <- UI.button #+ [string "Add graph"]
     drawGraphForce <- UI.button #+ [string "Add force on graph"]
     drawPie   <- UI.button #+ [string "Must have pie!"]
@@ -73,6 +78,8 @@ setup window = do
                     [ column [element canvas]
                     , element drawTriangle
                     , element drawGraph
+                    , element drawMeshedTriangle1
+                    , element drawMeshedTriangle2
                     , element button
                     , column[element clear]
                     
@@ -172,7 +179,45 @@ setup window = do
             canvas # UI.moveTo (zoomPoint (findIndex x (forInterface beforeResultat)) canvasSize)
             canvas # UI.lineTo (zoomPoint (findIndex y (forInterface beforeResultat)) canvasSize)
         canvas # UI.stroke
-    
+     -- draw the triangle, with meshing (once)
+    on UI.click drawMeshedTriangle1 $ const $ do
+        getBody window #+ [element drawMeshedTriangleForce1]
+        canvas # set' UI.strokeStyle "black"
+        canvas # UI.beginPath
+        forM_ (listLiaisonsMaillage 1) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (trianglePointsOnly 1)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (trianglePointsOnly 1)))) canvasSize)
+        canvas # UI.stroke
+
+    -- draw meshed (once) triangle force
+    on UI.click drawMeshedTriangleForce1 $ const $ do
+        canvas # set' UI.strokeStyle "red"
+        canvas # UI.beginPath
+        forM_ (listLiaisonsMaillage 1) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillage 1))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillage 1))) canvasSize)
+        canvas # UI.stroke
+
+     -- draw the triangle, with meshing (twice)
+    on UI.click drawMeshedTriangle2 $ const $ do
+        getBody window #+ [element drawMeshedTriangleForce2]
+        canvas # set' UI.strokeStyle "black"
+        canvas # UI.beginPath
+        forM_ (listLiaisonsMaillage 2) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (trianglePointsOnly 2)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (trianglePointsOnly 2)))) canvasSize)
+        canvas # UI.stroke
+
+    -- draw meshed (twice) triangle force
+    on UI.click drawMeshedTriangleForce2 $ const $ do
+        canvas # set' UI.strokeStyle "red"
+        canvas # UI.beginPath
+        forM_ (listLiaisonsMaillage 2) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillage 2))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillage 2))) canvasSize)
+        canvas # UI.stroke
+
+
     on UI.click drawGraph $ const $ do
         getBody window #+ [element drawGraphForce]
         canvas # set' UI.strokeStyle "green"
@@ -181,7 +226,7 @@ setup window = do
             canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat listPointex2))) canvasSize)
             canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat listPointex2))) canvasSize)
         canvas # UI.stroke
-
+    
     on UI.click drawGraphForce $ const $ do
         canvas # set' UI.strokeStyle "red"
         canvas # UI.beginPath
