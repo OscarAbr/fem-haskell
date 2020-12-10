@@ -2,6 +2,8 @@ module Fem where
 
 import Operations
 
+
+
 partiel :: Double -> Double -> Matrix -> Double -> Matrix
 partiel x y locale n = map(\j -> line j 0 n) [0..(n-1)]
  where line i j n 
@@ -39,33 +41,29 @@ distance ::(Double,Double) -> (Double,Double) -> Double
 distance (x1,y1) (x2,y2) = sqrt((x1-x2)*(x1-x2) + (y1 - y2)*(y1 - y2))
 globalRigidity = genMatrix (\(i,j) -> 0.0) 6
 
--- calcule la normale
-normale :: [Double] -> [Double] -> [Double]
-normale p0 p1 = map (*(1/(distance(x0,y0) (x1, y1)))) (zipWith (-) p1 p0)
- where x0 = findIndex 0 p0
-       y0 = findIndex 1 p0
-       x1 = findIndex 0 p1
-       y1 = findIndex 1 p1
+-- calcule le vecteur unitaire porté par la poutre (liaison entre 2 points) par deux points (point A vers B)
+unitaire :: [Double] -> [Double] -> [Double]
+unitaire (x0:(y0:_)) (x1:(y1:_)) = map (*(1/(distance(x0,y0) (x1, y1)))) (zipWith (-) [x1,y1] [x0,y0])
 
 
 
 -- fonction [a1,a2,a3] [b1,b2,b3] = [a1*[b1,b2,b3], a2*[b1,b2,b3]...]	   
-fonction :: [Double] -> [Double] -> Matrix  
-fonction [x] l2 = (map(*x) l2) : []
-fonction (x:xs) l2 = (map (*x) l2): fonction xs l2
+prod :: [Double] -> [Double] -> Matrix  
+prod [x] l2 = (map(*x) l2) : []
+prod (x:xs) l2 = (map (*x) l2): prod xs l2
 
 
 
 
 localRigidity :: Matrix -> Double -> Double -> Double -> Matrix
-localRigidity positionMatrix rigidityK i j = multk (rigidityK/(distance(x0,y0) (x1, y1))) (fonction  n n)
+localRigidity positionMatrix rigidityK i j = multk (rigidityK/(distance(x0,y0) (x1, y1))) (prod  n n)
  where p0 = findIndex i positionMatrix
        p1 = findIndex j positionMatrix
        x0 = findIndex 0 p0
        y0 = findIndex 1 p0
        x1 = findIndex 0 p1
        y1 = findIndex 1 p1
-       n1 = normale p0 p1
+       n1 = unitaire p0 p1
        minusn1 = map(*(-1)) n1
        n = concat[minusn1, n1]  
 
