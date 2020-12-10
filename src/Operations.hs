@@ -23,19 +23,6 @@ idt n = map (\i->line 0 i n) [0..(n-1)]
          if (i==n) then 1:(line (i+1) n m) else 0:(line (i+1) n m)
  
 
--- (diagonal dominant) matrix inversion
-invert :: Matrix->Matrix
-invert m = m'
- where n = length m
-       i = idt n
-       k = head (head m)
-       b = i
-       c = (1/k) `multk` m
-       d = (1/k) `multk` b
-       f = i `minus` c
-       fx x = (f `mult` x) `plus` d
-       m' = iter 20 fx d   
-
 -- multiplication of a matrix m by a constant k
 multk :: Double->Matrix->Matrix
 multk k m = map (map (*k)) m

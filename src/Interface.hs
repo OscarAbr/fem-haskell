@@ -50,7 +50,6 @@ setup window = do
     
     return window # set title "Canvas - Examples"
 
-    UI.addStyleSheet window "style.css"
     --pointsRef <- UI.liftIO (newIORef [] :: IO (IORef [Point]))
     canvas <- UI.canvas
         # set UI.height (2*canvasSize)

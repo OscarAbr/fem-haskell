@@ -5,7 +5,6 @@ import Operations
 import Fem
 
 import Interface
-import Editor
 
 
 

@@ -74,8 +74,6 @@ listPoint = [[0.0,0.0],[1.0,1.73],[2.0,0.0]]
 
 listLiaison = [[0.0,1],[1.0,2.0]]
 
-example::String
-example = "Je suis dans la branche graph"
 
 deplacementMatrix :: Matrix -> Matrix -> Matrix
 deplacementMatrix k f = mult (inverse k) f
