@@ -75,23 +75,39 @@ ktriangle n = total (intMtoDoubleM (triangleMaillageLines2 n)) (trianglePointsOn
 ktriangleLim n = subMatrix[0,1,convToDouble(length (ktriangle n) - 2),convToDouble(length (ktriangle n) - 1)] (ktriangle n)
 
 
+--stage 1 apply force[0.1],[0.0] if [1.0,1.74] is encountered
+forceTriangle []  = [] 
+forceTriangle ([1.0,1.74]:q) = [0.1] : ([0.0]:forceTriangle q)
+forceTriangle (_:q) = [0.0] : ([0.0]:forceTriangle q)
+--stage 2 apply force f  if p is encountered
+forceTriangle2 :: [Double] -> [Double] -> Matrix -> Matrix
+forceTriangle2 p f []  = [] 
+forceTriangle2 p f (point:q) 
+ | p == point = [head f] : ((tail f):forceTriangle2 p f q)
+ | otherwise = [0.0] : ([0.0]:(forceTriangle2 p f q))
 
+--stage 3 apply force f1...fs to p1...ps if p1...ps is encountered (f1:fs) (p1:ps)
+--I could have used the previous function and summed the results but this is easy to follow too
+forceTriangle3 :: Matrix -> Matrix -> Matrix -> Matrix ->Matrix -> Matrix
+forceTriangle3 ptsInit fInit _ _ []  = [] 
+forceTriangle3 ptsInit fInit [] fs (h:t)  = [0.0] : ([0.0]:forceTriangle3 ptsInit fInit ptsInit fInit t)
+forceTriangle3 ptsInit fInit ps [] (h:t)  = [0.0] : ([0.0]:forceTriangle3 ptsInit fInit ptsInit fInit t)
+forceTriangle3  ptsInit fInit (p1:ps) (f1:fs) (point:q) 
+ | p1 == point = [head f1] : ((tail f1):forceTriangle3 ptsInit fInit ps fs q)
+ | otherwise = forceTriangle3 ptsInit fInit ps fs  (point:q) 
 
+---applique les forces aux points donnés, sors la matrice des forces
+--exemple : forceTriangleLim [[1.0,1.74],[1.0,0.0]] [[0.1,0.0],[0.0,-1]] [[1.0,0.0],[0.5,0.87],[1.5,0.87],[1.0,1.74]]
+--applique la force [0.1,0.0] si la 3eme liste comporte le point [1.0,1.74]
+--on aura en sortie de cette exemple:
+--[[0.0],[-1.0],[0.0],[0.0],[0.0],[0.0],[0.1],[0.0]]
+-- force en direction de -y norme 1 pour le 1er point, direction de x norme 0.1 pour le dernier  
+forceTriangleLim :: Matrix -> Matrix ->Matrix-> Matrix
+forceTriangleLim ptsInit fInit listPoints = forceTriangle3 ptsInit fInit ptsInit fInit listPoints
 
+testFLim n = forceTriangleLim [[1.0,1.74],[1.0,0.0]] [[0.1,0.0],[0.0,-0.1]] (init(tail(trianglePointsOnly n)))
 
-
-forceTriangleLim:: Int -> Int -> Matrix
-forceTriangleLim i n
- | i == 2 *(findIndexOf 0 [1.0,1.74] (removeIndex (siz - 2.0) (removeIndex 0.0 m)))    =[0.1]:forceTriangleLim (i+1) n  
- | i == k = [[0.0]]
- | otherwise = [0.0]:forceTriangleLim (i+1) n
- where k = length (ktriangleLim n) -1
-       m = trianglePointsOnly n
-       m2 = subMatrix[0.0,siz-1.0] m
-       siz = convToDouble (length m)
-
-
-uiTriangle n = concat (deplacementMatrix (ktriangleLim n) (forceTriangleLim 0 n))
+uiTriangle n = concat (deplacementMatrix (ktriangleLim n) (testFLim n))
 
 uTriangle n = insertZeros (uiTriangle n)
 
