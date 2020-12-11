@@ -1,10 +1,9 @@
 module Interface
 (interface) 
 where
-import Data.IORef
 import qualified Graphics.UI.Threepenny      as UI
 import Graphics.UI.Threepenny.Core
-    (stepper, get, value, attr,  defaultConfig,
+    (get, value, attr,  defaultConfig,
       (#),
       (#+),
       (#.),
@@ -29,9 +28,6 @@ import Fem
 import Example2
 import ExampleMaillage
 import Operations (findIndex)
-import Text.Printf (printf)
-import Safe (readMay)
-import Control.Monad.IO.Class (MonadIO(liftIO))
 
 {-----------------------------------------------------------------------------
     Threepenny
