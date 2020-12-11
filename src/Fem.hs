@@ -32,6 +32,7 @@ partiel x y locale n = map(\j -> line j 0 n) [0..(n-1)]
 
 
 -- Rigidity matrix
+-- calcul une matrice partielle qui fait la taille d'une globale, les valeurs vides sont égales à 0
 total::[[Double]] -> [[Double]] -> Matrix
 total [] points = genMatrix (\(x,y) -> 0.0) (convToDouble(length points)*2)
 total (x:liaisons) points = plus (partiel (head x) (last x) (localRigidity points 1.0 (head x) (last x)) (convToDouble(length points)*2)) (total liaisons points)
