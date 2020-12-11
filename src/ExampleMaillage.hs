@@ -93,7 +93,7 @@ forceTriangle3 ptsInit fInit _ _ []  = []
 forceTriangle3 ptsInit fInit [] fs (h:t)  = [0.0] : ([0.0]:forceTriangle3 ptsInit fInit ptsInit fInit t)
 forceTriangle3 ptsInit fInit ps [] (h:t)  = [0.0] : ([0.0]:forceTriangle3 ptsInit fInit ptsInit fInit t)
 forceTriangle3  ptsInit fInit (p1:ps) (f1:fs) (point:q) 
- | p1 == point = [head f1] : ((tail f1):forceTriangle3 ptsInit fInit ps fs q)
+ | p1 == point = [head f1] : ((tail f1):forceTriangle3 ptsInit fInit ptsInit fInit q)
  | otherwise = forceTriangle3 ptsInit fInit ps fs  (point:q) 
 
 ---applique les forces aux points donnés, sors la matrice des forces
@@ -105,12 +105,22 @@ forceTriangle3  ptsInit fInit (p1:ps) (f1:fs) (point:q)
 forceTriangleLim :: Matrix -> Matrix ->Matrix-> Matrix
 forceTriangleLim ptsInit fInit listPoints = forceTriangle3 ptsInit fInit ptsInit fInit listPoints
 
-testFLim n = forceTriangleLim [[1.0,1.74],[1.0,0.0]] [[0.1,0.0],[0.0,-0.1]] (init(tail(trianglePointsOnly n)))
+--avec pts fixes
+testFLim n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,0.2],[-0.3,0.1],[0.3,0.1],[0.0,-0.2]] (init(tail(trianglePointsOnly n)))
+
+--sans points fixes
+testFLim2 :: Deep -> Matrix
+testFLim2 n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,0.2],[-0.3,0.1],[0.3,0.1],[0.0,-0.2]] (trianglePointsOnly n)
+
 
 uiTriangle n = concat (deplacementMatrix (ktriangleLim n) (testFLim n))
 
+
+--avec points fixes
 uTriangle n = insertZeros (uiTriangle n)
 
+---sans points ifxes
+uTriangle2 n = concat (deplacementMatrix (ktriangle n) (testFLim2 n))
 
-
+--utilise les pts fixes de base (aux extrémités)
 resultatTriangleMaillage n = zipWith (+) (concat (trianglePointsOnly n)) (uTriangle n)
