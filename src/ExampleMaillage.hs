@@ -98,5 +98,3 @@ uTriangle n = insertZeros (uiTriangle n)
 
 
 resultatTriangleMaillage n = zipWith (+) (concat (trianglePointsOnly n)) (uTriangle n)
-
-

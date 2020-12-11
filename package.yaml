@@ -26,6 +26,7 @@ library:
   source-dirs: src
   dependencies:
   - threepenny-gui
+  - safe
 
 executables:
   fem-exe:
@@ -38,6 +39,7 @@ executables:
     dependencies:
     - fem
     - threepenny-gui
+    - safe
 
 tests:
   fem-test:

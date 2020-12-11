@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1f7f46b92ec74f190c8a7aeda36486aaffd1c6248d17da51186a97e76f412758
+-- hash: e9aef5d890901ffd23de7fcca935f2d9b12c9e285f1941c88ed304b1e45acdc0
 
 name:           fem
 version:        0.1.0.0
@@ -27,12 +27,13 @@ source-repository head
 
 library
   exposed-modules:
-      Editor
       Example2
+      ExampleMaillage
       Fem
       Interface
       Invert
       Lib
+      Maillage
       Operations
   other-modules:
       Paths_fem
@@ -41,6 +42,7 @@ library
   build-depends:
       base >=4.7 && <5
     , threepenny-gui
+    , safe
   default-language: Haskell2010
 
 executable fem-exe
@@ -54,6 +56,7 @@ executable fem-exe
       base >=4.7 && <5
     , fem
     , threepenny-gui
+    , safe
   default-language: Haskell2010
 
 test-suite fem-test

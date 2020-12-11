@@ -4,7 +4,7 @@ where
 import Data.IORef
 import qualified Graphics.UI.Threepenny      as UI
 import Graphics.UI.Threepenny.Core
-    ( defaultConfig,
+    (stepper, get, value, attr,  defaultConfig,
       (#),
       (#+),
       (#.),
@@ -29,6 +29,9 @@ import Fem
 import Example2
 import ExampleMaillage
 import Operations (findIndex)
+import Text.Printf (printf)
+import Safe (readMay)
+import Control.Monad.IO.Class (MonadIO(liftIO))
 
 {-----------------------------------------------------------------------------
     Threepenny
@@ -48,7 +51,6 @@ canvasSize = 400
 
 setup :: Window -> UI ()
 setup window = do
-    
     return window # set title "Canvas - Examples"
 
     --pointsRef <- UI.liftIO (newIORef [] :: IO (IORef [Point]))
@@ -57,7 +59,6 @@ setup window = do
         # set UI.width  (3*canvasSize)
         # set style [("border", "solid black 1px"), ("background", "#eee")]
 
-
     drawRects <- UI.button #+ [string "Add some rectangles."]
     drawTriangleForce  <- UI.button #+ [string "Apply force on triangle"]
     drawTriangle <- UI.button #+ [string "Add triangle."]
@@ -65,6 +66,11 @@ setup window = do
     drawMeshedTriangle1 <- UI.button #+ [string "Add meshed(once) triangle."]
     drawMeshedTriangleForce2  <- UI.button #+ [string "Apply force on meshed (twice) triangle"]
     drawMeshedTriangle2 <- UI.button #+ [string "Add meshed(twice) triangle."]
+    sliderMesh  <- UI.input # set UI.type_ "range"
+                           # set (attr "min") (show 0)
+                           # set (attr "max") (show 5)
+                           # set value (show 0)
+    meshForce <- UI.button #+ [string "Apply force on mesh"]
     drawGraph <- UI.button #+ [string "Add graph"]
     drawGraphForce <- UI.button #+ [string "Add force on graph"]
     drawPie   <- UI.button #+ [string "Must have pie!"]
@@ -81,30 +87,44 @@ setup window = do
                     , element drawMeshedTriangle1
                     , element drawMeshedTriangle2
                     , element button
-                    , column[element clear]
+                    , column[element clear
+                    , element sliderMesh]
                     
                     ]
             ]
         ]
         
-              
     on UI.mousedown canvas $ \(x, y) -> do
       --UI.liftIO $ modifyIORef' pointsRef ((x, y) :)
       canvas # UI.lineTo (x,y)
       canvas # UI.stroke
 
-    --on UI.click button $ const $ do
-      --points <- UI.liftIO $ readIORef pointsRef
-      --canvas # UI.beginPath
-      --canvas # UI.moveTo (head points)q
-      --canvas # UI.lineTo (last points)
-      --canvas # UI.stroke
 
 
-
-
+        
+    on UI.click sliderMesh $ const $ do
+        canvas # UI.clearCanvas
+        getBody window #+ [element meshForce]
+        canvas # set' UI.strokeStyle "black"
+        canvas # UI.beginPath
+        inValue  <- get value sliderMesh
+        let n = read inValue :: Int
+        forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (trianglePointsOnly n)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (trianglePointsOnly n)))) canvasSize)
+        canvas # UI.stroke
     
-   
+    on UI.click meshForce $ const $ do
+        canvas # set' UI.strokeStyle "red"
+        canvas # UI.beginPath
+        inValue  <- get value sliderMesh
+        let n = read inValue :: Int
+        forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillage n))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillage n))) canvasSize)
+        canvas # UI.stroke
+
+
     on UI.click clear $ const $ do
         canvas # UI.clearCanvas
         canvas # UI.beginPath
