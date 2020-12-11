@@ -5,7 +5,7 @@ module Invert where
 
 import Prelude hiding ((<*>),(<>))
 
-nb = 10
+nb = 100
 
 diag m = r
  where n = length m
