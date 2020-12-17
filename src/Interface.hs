@@ -28,6 +28,7 @@ import Fem
 import Example2
 import ExampleMaillage
 import Operations (findIndex)
+import ForceSlide
 
 {-----------------------------------------------------------------------------
     Threepenny
@@ -66,6 +67,10 @@ setup window = do
                            # set (attr "min") (show 0)
                            # set (attr "max") (show 5)
                            # set value (show 0)
+    sliderForce  <- UI.input # set UI.type_ "range"
+                           # set (attr "min") (show 0)
+                           # set (attr "max") (show 10)
+                           # set value (show 0)
     meshForce <- UI.button #+ [string "Apply force on mesh"]
     drawGraph <- UI.button #+ [string "Add graph"]
     drawGraphForce <- UI.button #+ [string "Add force on graph"]
@@ -84,7 +89,8 @@ setup window = do
                     , element drawMeshedTriangle2
                     , element button
                     , column[element clear
-                    , element sliderMesh]
+                    , element sliderMesh
+                    , element sliderForce]
                     
                     ]
             ]
@@ -97,10 +103,22 @@ setup window = do
 
 
 
-        
+    on UI.click sliderForce $ const $ do
+        canvas # set' UI.strokeStyle "red"
+        canvas # UI.beginPath
+
+        inValuef  <- get value sliderForce
+        let f = read inValuef :: Int
+        inValuen  <- get value sliderMesh
+        let n = read inValuen :: Int
+
+        forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillageSlide n f))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillageSlide n f))) canvasSize)
+        canvas # UI.stroke
+
     on UI.click sliderMesh $ const $ do
         canvas # UI.clearCanvas
-        getBody window #+ [element meshForce]
         canvas # set' UI.strokeStyle "black"
         canvas # UI.beginPath
         inValue  <- get value sliderMesh
@@ -108,16 +126,6 @@ setup window = do
         forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
             canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (trianglePointsOnly n)))) canvasSize)
             canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (trianglePointsOnly n)))) canvasSize)
-        canvas # UI.stroke
-    
-    on UI.click meshForce $ const $ do
-        canvas # set' UI.strokeStyle "red"
-        canvas # UI.beginPath
-        inValue  <- get value sliderMesh
-        let n = read inValue :: Int
-        forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillage n))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillage n))) canvasSize)
         canvas # UI.stroke
 
 
