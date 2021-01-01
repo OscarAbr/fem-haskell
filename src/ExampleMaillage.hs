@@ -110,7 +110,7 @@ testFLim n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0
 
 --sans points fixes
 testFLim2 :: Deep -> Matrix
-testFLim2 n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,0.2],[-0.3,0.1],[0.3,0.1],[0.0,-0.2]] (trianglePointsOnly n)
+testFLim2 n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,0.2],[0.0,0.1],[0.0,0.1],[0.0,0.0]] (trianglePointsOnly n)
 
 
 uiTriangle n = concat (deplacementMatrix (ktriangleLim n) (testFLim n))

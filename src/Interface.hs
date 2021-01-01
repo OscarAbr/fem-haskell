@@ -52,7 +52,7 @@ setup window = do
 
     --pointsRef <- UI.liftIO (newIORef [] :: IO (IORef [Point]))
     canvas <- UI.canvas
-        # set UI.height (2*canvasSize)
+        # set UI.height (canvasSize)
         # set UI.width  (3*canvasSize)
         # set style [("border", "solid black 1px"), ("background", "#eee")]
 
