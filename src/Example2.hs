@@ -2,6 +2,7 @@ module Example2 where
 import Fem
 import Operations
 
+--exemple 2 (pont à 5 points) on voit ici qu'il est relativement aisé d'implémenter des exemples.
 listPointex2 = [[0.0,0.0],[2.0,2.0],[4.0,0.0],[6.0,2.0],[8.0,0.0]]
 
 
@@ -19,7 +20,7 @@ u2 = insertZeros ui2
 resultat2 :: [Double]
 resultat2 = zipWith (+) (concat listPointex2) u2
 
-
+--pas utilisé
 csvx2 = csvX resultat2
 
 csvy2 = csvY resultat2
