@@ -1,8 +1,10 @@
 module ExampleMaillage where
 import Fem
-import Operations
+import Operations ( Matrix, convToDouble, subMatrix )
 import Maillage
 
+
+--fonction utiles
 cleanIdx [(_,xy)] = [xy]
 cleanIdx ((_,xy):q) = xy: (cleanIdx q)
 pairToList [(a,b)] = [[a,b]]
@@ -26,9 +28,9 @@ intMtoDoubleM:: [[Int]] -> [[Double]]
 intMtoDoubleM [t] = [intLtoDoubleL t]
 intMtoDoubleM (t:q) = intLtoDoubleL t : intMtoDoubleM q
 
-
+--Utilise les fonctions de Maillage.hs (L. Thiry!) pour réaliser un maillage de profondeur nème (slider) d'un triangle
 triangleOriginal = [[0.0,0.0],[1.0,1.74],[2.0,0.0]]
---meshed with depth 1
+--meshed with depth 1 - example
 triangleMaillage1 = discretize 1 [triangleOriginal]
 
 trianglePointsIdx1 = points triangleMaillage1
@@ -54,7 +56,7 @@ resultatTriangleMaillage1 :: [Double]
 resultatTriangleMaillage1 = zipWith (+) (concat trianglePointsOnly1) uTriangle1
 
 
---generalizing
+--generalizing for n
 
 triangleMaillage n = discretize n [triangleOriginal]
 
@@ -74,11 +76,12 @@ ktriangle n = total (intMtoDoubleM (triangleMaillageLines2 n)) (trianglePointsOn
 
 ktriangleLim n = subMatrix[0,1,convToDouble(length (ktriangle n) - 2),convToDouble(length (ktriangle n) - 1)] (ktriangle n)
 
-
+--not used
 --stage 1 apply force[0.1],[0.0] if [1.0,1.74] is encountered
 forceTriangle []  = [] 
 forceTriangle ([1.0,1.74]:q) = [0.1] : ([0.0]:forceTriangle q)
 forceTriangle (_:q) = [0.0] : ([0.0]:forceTriangle q)
+--not used
 --stage 2 apply force f  if p is encountered
 forceTriangle2 :: [Double] -> [Double] -> Matrix -> Matrix
 forceTriangle2 p f []  = [] 
@@ -105,7 +108,8 @@ forceTriangle3  ptsInit fInit (p1:ps) (f1:fs) (point:q)
 forceTriangleLim :: Matrix -> Matrix ->Matrix-> Matrix
 forceTriangleLim ptsInit fInit listPoints = forceTriangle3 ptsInit fInit ptsInit fInit listPoints
 
---avec pts fixes
+--avec pts fixes pose pb à partir de depth 3, les points aux extremités (1 er et dernier)ne sont plus aux extremités
+--on pourrait regler ce pb avec une fonction similaire à ForceTriangle3 mais pas assez rentable
 testFLim n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,0.2],[-0.3,0.1],[0.3,0.1],[0.0,-0.2]] (init(tail(trianglePointsOnly n)))
 
 --sans points fixes

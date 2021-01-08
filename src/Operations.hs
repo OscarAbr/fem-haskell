@@ -52,6 +52,7 @@ findIndex i (_:xs) = findIndex (i-1) xs
 coeff :: Double -> Double -> Matrix -> Double
 coeff i j m = findIndex j (findIndex i m)
 
+--convertit juste en doubles
 deter :: Matrix -> Double
 deter m = deter' m (convToDouble ((length m)-1))
 
@@ -59,7 +60,7 @@ convToDouble :: Int -> Double
 convToDouble x = 1.0 * fromIntegral x
 
 
-
+--calcul du déterminant d'une matrice, selon la definition
 deter' :: Matrix -> Double -> Double
 deter' [[x]] j = x
 deter' m 0 = coeff 0 0 m * deter (cofac 0 0 m)
@@ -88,15 +89,19 @@ buildMatrix' i motif sizeMatrix = buildMatrix' (i-1) motif sizeMatrix  ++ [build
 buildMatrix :: [Double]  -> Int -> Matrix
 buildMatrix motif sizeMatrix = [buildLine 0 (tail motif) sizeMatrix (length motif - 1)] ++ buildMatrix' (sizeMatrix - 3) motif sizeMatrix ++ [buildLine (sizeMatrix- (length (init motif))) (init motif) sizeMatrix (length motif - 1)]
 
+--version améliroée de buildMatrix, on donne une fonction f(x,y) et elle genère une matrice en appliquant la fonction aux indices.
+
 genMatrix :: ((Double,Double) -> Double) -> Double -> Matrix
 genMatrix f n = map(\j -> line j 0 n) [0..(n-1)]
  where line i j n 
             | j == n = [] 
             | otherwise = f(i,j) : line i (j+1) n
 
+-- des exemples
+-- pour matrice identité
 funcEqual :: (Double,Double) -> Double
 funcEqual (i,j) = if (i == j) then 1.0 else 0.0
-
+--motif du 1er exemple presenté (1D)
 funcMotif :: (Double,Double) -> Double
 funcMotif (i,j)  
     | i == j    = -2.0
@@ -109,13 +114,15 @@ removeIndex :: Double -> [a] -> [a]
 removeIndex 0 (x:xs) =  xs
 removeIndex i (x:xs) = x : (removeIndex (i-1) xs)
 
+--utile pour comatrice/deter
 removeCross :: Double -> Matrix -> Matrix
 removeCross x m  = removeIndex x (map (removeIndex x) m)
 
+--pas utilisé
 subMatrix :: [Double] -> Matrix -> Matrix
 subMatrix [] m = m
 subMatrix (x:xs) m = removeCross x (subMatrix xs m)
-
+--pas utilisé
 removeIndexes :: [Double] -> [Double] -> [Double]
 removeIndexes [] l = l
 removeIndexes (x:xs) l = removeIndexes xs (removeIndex x l)

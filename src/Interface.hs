@@ -33,6 +33,7 @@ import ForceSlide
 {-----------------------------------------------------------------------------
     Threepenny
     Hello world!
+    Notre interface utilise Threepenny on a laissé quelques exemples dont on s'est inspiré (pie chart, some rectangles...)
 ------------------------------------------------------------------------------}
 
 -- imports
@@ -45,6 +46,7 @@ interface = do
         } setup
     putStrLn "setup done"
 canvasSize = 400
+
 
 setup :: Window -> UI ()
 setup window = do
