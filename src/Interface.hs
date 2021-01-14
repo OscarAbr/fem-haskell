@@ -29,10 +29,12 @@ import Example2
 import ExampleMaillage
 import Operations (findIndex)
 import ForceSlide
+import Interpret
 
 {-----------------------------------------------------------------------------
     Threepenny
     Hello world!
+    Notre interface utilise Threepenny on a laissé quelques exemples dont on s'est inspiré (pie chart, some rectangles...)
 ------------------------------------------------------------------------------}
 
 -- imports
@@ -46,21 +48,25 @@ interface = do
     putStrLn "setup done"
 canvasSize = 400
 
+
 setup :: Window -> UI ()
 setup window = do
     return window # set title "Canvas - Examples"
 
     --pointsRef <- UI.liftIO (newIORef [] :: IO (IORef [Point]))
     canvas <- UI.canvas
-        # set UI.height (2*canvasSize)
+        # set UI.height (canvasSize)
         # set UI.width  (3*canvasSize)
         # set style [("border", "solid black 1px"), ("background", "#eee")]
 
     drawRects <- UI.button #+ [string "Add some rectangles."]
     drawTriangleForce  <- UI.button #+ [string "Apply force on triangle"]
+    drawCircleForce  <- UI.button #+ [string "Apply force on circle"]
     drawTriangle <- UI.button #+ [string "Add triangle."]
     drawMeshedTriangleForce1  <- UI.button #+ [string "Apply force on meshed (once) triangle"]
     drawMeshedTriangle1 <- UI.button #+ [string "Add meshed(once) triangle."]
+    drawMeshedCircle3 <- UI.button #+ [string "Add meshed(3) circle."]
+    drawMeshedCircleForce3 <- UI.button #+ [string "Apply force on meshed (3) circle"]
     drawMeshedTriangleForce2  <- UI.button #+ [string "Apply force on meshed (twice) triangle"]
     drawMeshedTriangle2 <- UI.button #+ [string "Add meshed(twice) triangle."]
     sliderMesh  <- UI.input # set UI.type_ "range"
@@ -85,9 +91,11 @@ setup window = do
                     [ column [element canvas]
                     , element drawTriangle
                     , element drawGraph
+                    , element drawMeshedCircle3
                     , element drawMeshedTriangle1
                     , element drawMeshedTriangle2
                     , element button
+                    , element drawMeshedCircleForce3
                     , column[element clear
                     , element sliderMesh
                     , element sliderForce]
@@ -241,6 +249,25 @@ setup window = do
             canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillage 2))) canvasSize)
         canvas # UI.stroke
 
+    on UI.click drawMeshedCircle3 $ const $ do
+        --getBody window #+ [element drawMeshedTriangleForce2]
+        getBody window #+ [element drawMeshedCircleForce3]
+        canvas # set' UI.strokeStyle "green"
+        canvas # UI.beginPath
+        forM_ (listLiaisonsCMaillage 4) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly 4)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly 4)))) canvasSize)
+        canvas # UI.stroke
+
+    on UI.click drawMeshedCircleForce3 $ const $ do
+        --getBody window #+ [element drawMeshedTriangleForce2]
+        ---getBody window #+ [element drawMeshedCircleForce3]
+        canvas # set' UI.strokeStyle "red"
+        canvas # UI.beginPath
+        forM_ (listLiaisonsCMaillage 4) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatCircleMaillage 4))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatCircleMaillage 4))) canvasSize)
+        canvas # UI.stroke
 
     on UI.click drawGraph $ const $ do
         getBody window #+ [element drawGraphForce]
