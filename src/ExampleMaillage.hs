@@ -27,7 +27,7 @@ intMtoDoubleM [t] = [intLtoDoubleL t]
 intMtoDoubleM (t:q) = intLtoDoubleL t : intMtoDoubleM q
 
 
-triangleOriginal = [[0.0,0.0],[1.0,1.74],[2.0,0.0]]
+triangleOriginal = [[0.0,0.0],[6.0,5.0],[6.0,0.0]]
 --meshed with depth 1
 triangleMaillage1 = discretize 1 [triangleOriginal]
 
