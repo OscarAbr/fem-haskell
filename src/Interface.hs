@@ -55,7 +55,7 @@ setup window = do
 
     --pointsRef <- UI.liftIO (newIORef [] :: IO (IORef [Point]))
     canvas <- UI.canvas
-        # set UI.height (canvasSize)
+        # set UI.height (2*canvasSize)
         # set UI.width  (3*canvasSize)
         # set style [("border", "solid black 1px"), ("background", "#eee")]
 
@@ -254,9 +254,9 @@ setup window = do
         getBody window #+ [element drawMeshedCircleForce3]
         canvas # set' UI.strokeStyle "green"
         canvas # UI.beginPath
-        forM_ (listLiaisonsCMaillage 4) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly 4)))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly 4)))) canvasSize)
+        forM_ (listLiaisonsCMaillage 7) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly 7)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly 7)))) canvasSize)
         canvas # UI.stroke
 
     on UI.click drawMeshedCircleForce3 $ const $ do
