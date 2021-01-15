@@ -29,7 +29,7 @@ intMtoDoubleM [t] = [intLtoDoubleL t]
 intMtoDoubleM (t:q) = intLtoDoubleL t : intMtoDoubleM q
 
 --Utilise les fonctions de Maillage.hs (L. Thiry!) pour réaliser un maillage de profondeur nème (slider) d'un triangle
-triangleOriginal = [[0.0,0.0],[3.0,5.1962],[6.0,0.0]]
+triangleOriginal = [[0.0,0.0],[6.0,8.0],[12.0,0.0]]
 --meshed with depth 1 - example
 triangleMaillage1 = discretize 1 [triangleOriginal]
 
@@ -56,6 +56,8 @@ resultatTriangleMaillage1 :: [Double]
 resultatTriangleMaillage1 = zipWith (+) (concat trianglePointsOnly1) uTriangle1
 
 
+
+
 --generalizing for n
 
 triangleMaillage n = discretize n [triangleOriginal]
@@ -64,7 +66,10 @@ trianglePointsIdx n = points (triangleMaillage n)
 
 
 trianglePointsOnly n = cleanIdx (trianglePointsIdx n)
-
+trianglePointsOnlyDemo n = cleanIdx (trianglePointsIdxDemo n)
+trianglePointsIdxDemo n = points (triangleMaillageDemo n)
+triangleMaillageDemo n = discretize n [triangleOriginalDemo]
+triangleOriginalDemo = [[0.0,8.0],[12.0,8.0],[12.0,0.0]]
 
 triangleMaillageLines n = set (lins (trianglePointsIdx n) (triangleMaillage n))
 

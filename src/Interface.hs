@@ -254,9 +254,10 @@ setup window = do
         getBody window #+ [element drawMeshedCircleForce3]
         canvas # set' UI.strokeStyle "green"
         canvas # UI.beginPath
-        forM_ (listLiaisonsCMaillage 4) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly 4)))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly 4)))) canvasSize)
+        forM_ (listLiaisonsCMaillage 5) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly 5)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly 5)))) canvasSize)
+
         canvas # UI.stroke
 
     on UI.click drawMeshedCircleForce3 $ const $ do
@@ -264,9 +265,9 @@ setup window = do
         ---getBody window #+ [element drawMeshedCircleForce3]
         canvas # set' UI.strokeStyle "red"
         canvas # UI.beginPath
-        forM_ (listLiaisonsCMaillage 4) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatCircleMaillage 4))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatCircleMaillage 4))) canvasSize)
+        forM_ (listLiaisonsCMaillage 5) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatCircleMaillage 5))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatCircleMaillage 5))) canvasSize)
         canvas # UI.stroke
 
     on UI.click drawGraph $ const $ do
