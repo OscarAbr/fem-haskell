@@ -36,6 +36,16 @@ contain s [] = True
 
 
 --equivalent de triangleMaillage n
+
+c1 = Circle 3.0 1.8 1.8
+c2 = Circle 2.4375 2.2733375000000002 0.5
+c3 = Circle 3.5625 2.2733375000000002 0.5
+
+c4 = Circle 3.0 1.0 0.6
+c5 = Inter (Circle 3.0 (-0.25) 1.5) (Circle 3.0 2.1 1.5 ) 
+c8 = Inter (Exclude (Union (Union (c3) (c2)) c5) ) c1 
+---c n = net ( c8) (triangleMaillage n)
+
 --- smiley
 -- c n = net (Union (Union (Circle 2.2 3.0 0.3) (Circle 3.8 3.0 0.3))(Inter (Circle 3.0 3.0 1.2) (Circle 3.0 1.0 1.2))) (triangleMaillage n)
 --voiture pleine
@@ -44,6 +54,7 @@ contain s [] = True
 --c n = net (Hole (Union (Union (Rectangle 3.0 2.0 4.0 3.0) (Rectangle 6.7 2.0 2.0 1.5))(Union (Circle 4.1 1.9 0.7) (Circle 7.1 1.9 0.7))) (Rectangle 4.0 3.0 2.7 1.5)) (triangleMaillage n)
 
 c n = net (Hole (Union (Union (Rectangle 3.0 2.0 4.0 3.0) (Rectangle 6.7 2.0 2.0 1.5))(Union (Circle 4.1 1.9 0.7) (Circle 7.1 1.9 0.7))) (Rectangle 4.0 3.0 2.7 1.5)) (triangleMaillage n)
+
 circlePointsIdx n = points (c n)
 circlePointsOnly n = cleanIdx (circlePointsIdx n)
 circleMaillageLines2 n = pairToList(triangleMaillageLinesNet n)
@@ -57,10 +68,14 @@ kcircleLim n = subMatrix[0,1,convToDouble(length (kcircle n) - 2),convToDouble(l
 triangleMaillageLinesNet n = set (lins (points (c n)) (c n))
 
 
-testCFLim2 n = forceTriangleLim [[4.3125,1.25],[3.9375,1.25],[7.3125,1.25],[6.9375,1.25]] [[0.0,0.1],[0.0,0.1],[0.0,0.1],[0.0,0.1]] (circlePointsOnly n)
+
+---testCFLim2 n = forceTriangleLim [[4.5,1.29905]] [[1.0,0.0]] (circlePointsOnly n)
+
+testCFLim2 n = forceTriangleLim [[8.625,3.0],[8.625,2.5]] [[-3.0,0.0],[-3.0,0.0]] (circlePointsOnly n)
 
 -- choc frontal [[8.625,3.0],[8.625,2.5]] [[-3.0,0.0],[-3.0,0.0]]
 -- dos d'ane [[4.3125,1.25],[3.9375,1.25],[7.3125,1.25],[6.9375,1.25]] [[0.0,1.0],[0.0,1.0],[0.0,1.0],[0.0,1.0]]
+
 
 --testFLim n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,-1.0],[-0.4,0.1],[0.4,0.1],[0.0,-1.0]] (init(tail(trianglePointsOnly n)))
 --testFLim2 n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,-1.0],[-0.4,0.1],[0.4,0.1],[0.0,-1.0]] (trianglePointsOnly n)
