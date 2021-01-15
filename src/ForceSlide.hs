@@ -3,7 +3,7 @@ module ForceSlide where
 import ExampleMaillage
 import Fem
 
---Un exemple pour le slider, f étant la variable du slider (1-10)
+--Un exemple pour le slider, f étant la variable du slider (1-5)
 resultatTriangleMaillageSlide n f = zipWith (+) (concat (trianglePointsOnly n)) (uTriangleSlide n f)
 
 uiTriangleSlide n f = concat (deplacementMatrix (ktriangleLim n) (testFLimSlide n f))
