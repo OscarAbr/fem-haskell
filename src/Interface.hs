@@ -75,7 +75,7 @@ setup window = do
                            # set value (show 0)
     sliderForce  <- UI.input # set UI.type_ "range"
                            # set (attr "min") (show 0)
-                           # set (attr "max") (show 10)
+                           # set (attr "max") (show 20)
                            # set value (show 0)
     meshForce <- UI.button #+ [string "Apply force on mesh"]
     drawGraph <- UI.button #+ [string "Add graph"]
@@ -120,9 +120,9 @@ setup window = do
         inValuen  <- get value sliderMesh
         let n = read inValuen :: Int
 
-        forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillageSlide n f))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillageSlide n f))) canvasSize)
+        forM_ (listLiaisonsCMaillage n) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatCircleMaillageSlide n f))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatCircleMaillageSlide n f))) canvasSize)
         canvas # UI.stroke
 
     on UI.click sliderMesh $ const $ do
@@ -131,9 +131,9 @@ setup window = do
         canvas # UI.beginPath
         inValue  <- get value sliderMesh
         let n = read inValue :: Int
-        forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (trianglePointsOnly n)))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (trianglePointsOnly n)))) canvasSize)
+        forM_ (listLiaisonsCMaillage n) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly n)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly n)))) canvasSize)
         canvas # UI.stroke
 
 
@@ -254,9 +254,9 @@ setup window = do
         getBody window #+ [element drawMeshedCircleForce3]
         canvas # set' UI.strokeStyle "green"
         canvas # UI.beginPath
-        forM_ (listLiaisonsCMaillage 7) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly 7)))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly 7)))) canvasSize)
+        forM_ (listLiaisonsCMaillage 4) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly 4)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly 4)))) canvasSize)
         canvas # UI.stroke
 
     on UI.click drawMeshedCircleForce3 $ const $ do

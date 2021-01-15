@@ -32,7 +32,14 @@ contain s [] = True
 
 
 --equivalent de triangleMaillage n
-c n = net (Circle 3.0 1.732 1.732) (triangleMaillage n)
+c1 = Circle 3.0 1.8 1.8
+c2 = Circle 2.4375 2.2733375000000002 0.5
+c3 = Circle 3.5625 2.2733375000000002 0.5
+
+c4 = Circle 3.0 1.0 0.6
+c5 = Inter (Circle 3.0 (-0.25) 1.5) (Circle 3.0 2.1 1.5 ) 
+c8 = Inter (Exclude (Union (Union (c3) (c2)) c5) ) c1 
+c n = net ( c8) (triangleMaillage n)
 circlePointsIdx n = points (c n)
 circlePointsOnly n = cleanIdx (circlePointsIdx n)
 circleMaillageLines2 n = pairToList(triangleMaillageLinesNet n)
@@ -46,7 +53,7 @@ kcircleLim n = subMatrix[0,1,convToDouble(length (kcircle n) - 2),convToDouble(l
 triangleMaillageLinesNet n = set (lins (points (c n)) (c n))
 
 
-testCFLim2 n = forceTriangleLim [[1.0,0.87]] [[0.0,-1.0]] (circlePointsOnly n)
+testCFLim2 n = forceTriangleLim [[4.5,1.29905]] [[1.0,0.0]] (circlePointsOnly n)
 
 --testFLim n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,-1.0],[-0.4,0.1],[0.4,0.1],[0.0,-1.0]] (init(tail(trianglePointsOnly n)))
 --testFLim2 n = forceTriangleLim [[1.0,1.74],[0.5,0.87],[1.5,0.87],[1.0,0.0]] [[0.0,-1.0],[-0.4,0.1],[0.4,0.1],[0.0,-1.0]] (trianglePointsOnly n)
