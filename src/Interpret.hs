@@ -57,7 +57,7 @@ kcircleLim n = subMatrix[0,1,convToDouble(length (kcircle n) - 2),convToDouble(l
 triangleMaillageLinesNet n = set (lins (points (c n)) (c n))
 
 
-testCFLim2 n = forceTriangleLim [[8.625,3.0],[8.625,2.5]] [[-3.0,0.0],[-3.0,0.0]] (circlePointsOnly n)
+testCFLim2 n = forceTriangleLim [[4.3125,1.25],[3.9375,1.25],[7.3125,1.25],[6.9375,1.25]] [[0.0,0.1],[0.0,0.1],[0.0,0.1],[0.0,0.1]] (circlePointsOnly n)
 
 -- choc frontal [[8.625,3.0],[8.625,2.5]] [[-3.0,0.0],[-3.0,0.0]]
 -- dos d'ane [[4.3125,1.25],[3.9375,1.25],[7.3125,1.25],[6.9375,1.25]] [[0.0,1.0],[0.0,1.0],[0.0,1.0],[0.0,1.0]]
