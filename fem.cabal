@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3a05c471381c2f9e39d4f68af11e582cfbd948f6fbccf81b0440d12f86d2028a
+-- hash: 25b1a243955dc8bfcc5405aae98ba9f6b61d9f7ba94110b8e2e8f61dc1ca702c
 
 name:           fem
 version:        0.1.0.0
@@ -32,6 +32,7 @@ library
       Fem
       ForceSlide
       Interface
+      Interpret
       Invert
       Lib
       Maillage
