@@ -6,9 +6,10 @@ import Fem
 import Maillage(lins, set, points)
 
 data Shape = Circle Double Double Double
-    | Square 
     | Inter Shape Shape
-    | Union Shape Shape deriving(Show)
+    | Union Shape Shape
+    | Exclude Shape
+    | Mutual Shape Shape deriving(Show)
 
 
 
@@ -24,12 +25,14 @@ contain :: Shape-> [[Double]] -> Bool
 contain (Circle x y r) (l:ls) = (sqrt((x-head l)*(x-head l) + (y - last l)*(y - last l)) < r) && (contain (Circle x y r) ls)
 contain (Inter s1 s2) l = (contain s1 l) && (contain s2 l)
 contain (Union s1 s2) l = (contain s1 l) || (contain s2 l)
+contain (Mutual s1 s2) l = (contain (Union s1 s2) l) && (not (contain (Inter s1 s2) l))
+contain (Exclude s) l = not (contain s l)
 contain s [] = True
 
 
 
 --equivalent de triangleMaillage n
-c n = net (Circle 1.0 0.87 0.5 )(triangleMaillage n)
+c n = net (Circle 3.0 1.732 1.732) (triangleMaillage n)
 circlePointsIdx n = points (c n)
 circlePointsOnly n = cleanIdx (circlePointsIdx n)
 circleMaillageLines2 n = pairToList(triangleMaillageLinesNet n)

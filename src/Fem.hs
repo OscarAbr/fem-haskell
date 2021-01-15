@@ -120,4 +120,4 @@ forInterface l = (head (take 2 l), last (take 2 l)) : (forInterface (drop 2 l))
 --   |
 -- y v
 zoomPoint:: (Double,Double)-> Int -> (Double, Double)
-zoomPoint (x,y) z = (100*x,fromIntegral z - 100*y)
+zoomPoint (x,y) z = (100*x, 2* fromIntegral z -100*y)

@@ -29,7 +29,7 @@ intMtoDoubleM [t] = [intLtoDoubleL t]
 intMtoDoubleM (t:q) = intLtoDoubleL t : intMtoDoubleM q
 
 --Utilise les fonctions de Maillage.hs (L. Thiry!) pour réaliser un maillage de profondeur nème (slider) d'un triangle
-triangleOriginal = [[0.0,0.0],[1.0,1.74],[2.0,0.0]]
+triangleOriginal = [[0.0,0.0],[3.0,5.1962],[6.0,0.0]]
 --meshed with depth 1 - example
 triangleMaillage1 = discretize 1 [triangleOriginal]
 
