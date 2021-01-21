@@ -54,24 +54,19 @@ canvasSize = 400
 
 setup :: String -> Window -> UI ()
 setup content window = do
-    return window # set title "Canvas - Examples"
+    return window # set title "FEM"
 
-    --pointsRef <- UI.liftIO (newIORef [] :: IO (IORef [Point]))
     canvas <- UI.canvas
         # set UI.height (2*canvasSize)
         # set UI.width  (3*canvasSize)
         # set style [("border", "solid black 1px"), ("background", "#eee")]
 
-    drawRects <- UI.button #+ [string "Add some rectangles."]
     drawTriangleForce  <- UI.button #+ [string "Apply force on triangle"]
-    drawCircleForce  <- UI.button #+ [string "Apply force on circle"]
     drawTriangle <- UI.button #+ [string "Add triangle."]
-    drawMeshedTriangleForce1  <- UI.button #+ [string "Apply force on meshed (once) triangle"]
-    drawMeshedTriangle1 <- UI.button #+ [string "Add meshed(once) triangle."]
-    drawMeshedCircle3 <- UI.button #+ [string "Add meshed(3) circle."]
-    drawMeshedCircleForce3 <- UI.button #+ [string "Apply force on meshed (3) circle"]
-    drawMeshedTriangleForce2  <- UI.button #+ [string "Apply force on meshed (twice) triangle"]
-    drawMeshedTriangle2 <- UI.button #+ [string "Add meshed(twice) triangle."]
+    
+    drawMeshedCircle3 <- UI.button #+ [string "Add car."]
+    drawMeshedCircleForce3 <- UI.button #+ [string "Crash the car ! (and your CPU ...) "]
+    
     sliderMesh  <- UI.input # set UI.type_ "range"
                            # set (attr "min") (show 0)
                            # set (attr "max") (show 5)
@@ -83,9 +78,8 @@ setup content window = do
     meshForce <- UI.button #+ [string "Apply force on mesh"]
     drawGraph <- UI.button #+ [string "Add graph"]
     drawGraphForce <- UI.button #+ [string "Add force on graph"]
-    drawPie   <- UI.button #+ [string "Must have pie!"]
     clear     <- UI.button #+ [string "Clear the canvas."]
-    button    <- UI.button #+ [string "fetch points."]
+    --button   <- UI.button #+ [string "fetch points."]
     readShape <- UI.button #+ [string "Read Shape"] 
 
     getBody window #+
@@ -96,10 +90,7 @@ setup content window = do
                     , element drawTriangle
                     , element drawGraph
                     , element drawMeshedCircle3
-                    , element drawMeshedTriangle1
-                    , element drawMeshedTriangle2
-                    , element button
-                    , element drawMeshedCircleForce3
+                    --, element button
                     , element readShape
                     , column[element clear
                     , element sliderMesh
@@ -109,10 +100,10 @@ setup content window = do
             ]
         ]
         
-    on UI.mousedown canvas $ \(x, y) -> do
+    --on UI.mousedown canvas $ \(x, y) -> do
       --UI.liftIO $ modifyIORef' pointsRef ((x, y) :)
-      canvas # UI.lineTo (x,y)
-      canvas # UI.stroke
+    --  canvas # UI.lineTo (x,y)
+    --  canvas # UI.stroke
 
 
 
@@ -125,9 +116,9 @@ setup content window = do
         inValuen  <- get value sliderMesh
         let n = read inValuen :: Int
 
-        forM_ (listLiaisonsCMaillage n) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatCircleMaillageSlide n f))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatCircleMaillageSlide n f))) canvasSize)
+        forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillageSlide n f))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillageSlide n f))) canvasSize)
         canvas # UI.stroke
 
     on UI.click sliderMesh $ const $ do
@@ -136,9 +127,9 @@ setup content window = do
         canvas # UI.beginPath
         inValue  <- get value sliderMesh
         let n = read inValue :: Int
-        forM_ (listLiaisonsCMaillage n) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (circlePointsOnly n)))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (circlePointsOnly n)))) canvasSize)
+        forM_ (listLiaisonsMaillage n) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (trianglePointsOnly n)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (trianglePointsOnly n)))) canvasSize)
         canvas # UI.stroke
 
 
@@ -148,7 +139,6 @@ setup content window = do
         delete drawTriangleForce
         delete drawGraphForce
        
-
     -- draw triangle force
     on UI.click drawTriangleForce $ const $ do
         canvas # set' UI.strokeStyle "red"
@@ -168,44 +158,7 @@ setup content window = do
             canvas # UI.moveTo (zoomPoint (findIndex x (forInterface beforeResultat)) canvasSize)
             canvas # UI.lineTo (zoomPoint (findIndex y (forInterface beforeResultat)) canvasSize)
         canvas # UI.stroke
-     -- draw the triangle, with meshing (once)
-    on UI.click drawMeshedTriangle1 $ const $ do
-        getBody window #+ [element drawMeshedTriangleForce1]
-        canvas # set' UI.strokeStyle "black"
-        canvas # UI.beginPath
-        forM_ (listLiaisonsMaillage 1) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (trianglePointsOnly 1)))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (trianglePointsOnly 1)))) canvasSize)
-        canvas # UI.stroke
-
-    -- draw meshed (once) triangle force
-    on UI.click drawMeshedTriangleForce1 $ const $ do
-        canvas # set' UI.strokeStyle "red"
-        canvas # UI.beginPath
-        forM_ (listLiaisonsMaillage 1) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillage 1))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillage 1))) canvasSize)
-        canvas # UI.stroke
-
-     -- draw the triangle, with meshing (twice)
-    on UI.click drawMeshedTriangle2 $ const $ do
-        getBody window #+ [element drawMeshedTriangleForce2]
-        canvas # set' UI.strokeStyle "black"
-        canvas # UI.beginPath
-        forM_ (listLiaisonsMaillage 2) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (trianglePointsOnly 2)))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (trianglePointsOnly 2)))) canvasSize)
-        canvas # UI.stroke
-
-    -- draw meshed (twice) triangle force
-    on UI.click drawMeshedTriangleForce2 $ const $ do
-        canvas # set' UI.strokeStyle "red"
-        canvas # UI.beginPath
-        forM_ (listLiaisonsMaillage 2) $ \[x,y] -> do
-            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (resultatTriangleMaillage 2))) canvasSize)
-            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (resultatTriangleMaillage 2))) canvasSize)
-        canvas # UI.stroke
-
+    
     on UI.click drawMeshedCircle3 $ const $ do
         --getBody window #+ [element drawMeshedTriangleForce2]
         getBody window #+ [element drawMeshedCircleForce3]
