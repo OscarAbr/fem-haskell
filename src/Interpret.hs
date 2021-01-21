@@ -14,6 +14,8 @@ data Shape = Circle Double Double Double
     | Mutual Shape Shape deriving(Show,Read)
 
 
+
+
 l = Hole (Union (Union (Rectangle 3.0 2.0 4.0 3.0) (Rectangle 6.7 2.0 2.0 1.5))(Union (Circle 4.1 1.9 0.7) (Circle 7.1 1.9 0.7))) (Rectangle 4.0 3.0 2.7 1.5)
 
 
@@ -92,6 +94,16 @@ testCFLim2 n = forceTriangleLim [[8.625,3.0],[8.625,2.5]] [[-3.0,0.0],[-3.0,0.0]
 uCircle2 n = concat (deplacementMatrix (kcircle n) (testCFLim2 n))
 
 resultatCircleMaillage n = zipWith (+) (concat (circlePointsOnly n)) (uCircle2 n)
+
+giveMaillage n s = net s (triangleMaillage n)
+
+shapePointsIdx n s = points (giveMaillage n s)
+shapePointsOnly n s = cleanIdx (shapePointsIdx n s)
+
+shapeMaillageLines2 n c = pairToList(shapeMaillageLinesNet n c)
+listLiaisonsShapeMaillage n s = intMtoDoubleM (shapeMaillageLines2 n s)
+shapeMaillageLinesNet n c = set (lins (points (giveMaillage n c)) (giveMaillage n c))
+
 
 
 
