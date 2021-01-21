@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 25b1a243955dc8bfcc5405aae98ba9f6b61d9f7ba94110b8e2e8f61dc1ca702c
+-- hash: 2aef19ebc83b606954d30888b9b825a79cedb19017af4e4e053e7f55b3900dba
 
 name:           fem
 version:        0.1.0.0
@@ -34,7 +34,6 @@ library
       Interface
       Interpret
       Invert
-      Lib
       Maillage
       Operations
   other-modules:
