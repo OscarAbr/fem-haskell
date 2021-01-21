@@ -50,6 +50,7 @@ interface  = do
     putStrLn "setup done"
 canvasSize = 400
 
+--makeContent = return readFile("test.txt")
 
 setup :: String -> Window -> UI ()
 setup content window = do
@@ -147,54 +148,6 @@ setup content window = do
         delete drawTriangleForce
         delete drawGraphForce
        
-    -- draw a pie chart
-    on UI.click drawPie $ const $ do
-        let
-            center = (fromIntegral canvasSize / 2, fromIntegral (canvasSize+30) / 2)
-            radius = 100
-
-            drawSlice start end color = do
-                canvas # set' UI.fillStyle (UI.htmlColor color)
-                canvas # set' UI.strokeStyle "white"
-                canvas # UI.beginPath
-                canvas # UI.arc center radius start end
-                canvas # UI.lineTo center
-                canvas # UI.closePath
-                canvas # UI.fill
-                canvas # UI.stroke
-
-            radian angle = angle * pi / 180
-
-            normalizeAngles xs = map (\(x,y) -> (360 * x/total,y)) xs
-                where total = sum $ map fst xs
-
-            pieData = normalizeAngles
-                [ (100, "#1f77b4")
-                , (45, "#ff7f0e")
-                , (80, "#2ca02c")
-                , (10, "#d62728")
-                , (105,"#9467bd")
-                , (20, "#8c564b")
-                ]
-
-        UI.timestamp -- measure drawing performance for fun
-        foldM (\start (delta, col) -> do
-            let end = start+delta
-            drawSlice (radian start) (radian end) col
-            return end) 0 pieData
-        UI.timestamp
-
-
-    -- draw some rectangles
-    on UI.click drawRects $ const $ do
-        let rects = [ (20 , 130, 15, 120, "teal")
-                    , (345, 110, 15, 90, "lightblue")
-                    , (220, 360, 95, 15, "teal")
-                    ]
-
-        forM_ rects $ \(x,y,w,h,color) -> do
-            canvas # set' UI.fillStyle (UI.htmlColor color)
-            canvas # UI.fillRect (x,y) w h
 
     -- draw triangle force
     on UI.click drawTriangleForce $ const $ do
@@ -294,7 +247,7 @@ setup content window = do
     on UI.click readShape $ const $ do
         canvas # set' UI.strokeStyle "green"
         canvas # UI.beginPath
-        let shape = read content :: Shape
+        let shape = read content :: Shape 
         forM_ (listLiaisonsShapeMaillage 5 shape) $ \[x,y] -> do
             canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (shapePointsOnly 5 shape)))) canvasSize)
             canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (shapePointsOnly 5 shape)))) canvasSize)
