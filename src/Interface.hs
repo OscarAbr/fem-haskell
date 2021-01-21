@@ -40,17 +40,19 @@ import Interpret
 -- imports
 type Point = (Double,Double)
 
-interface = do
+interface :: IO ()
+interface  = do
+    content <- readFile ("test.txt")
     startGUI defaultConfig
         { 
             jsStatic = Just "static"
-        } setup
+        } (setup content)
     putStrLn "setup done"
 canvasSize = 400
 
 
-setup :: Window -> UI ()
-setup window = do
+setup :: String -> Window -> UI ()
+setup content window = do
     return window # set title "Canvas - Examples"
 
     --pointsRef <- UI.liftIO (newIORef [] :: IO (IORef [Point]))
@@ -83,6 +85,7 @@ setup window = do
     drawPie   <- UI.button #+ [string "Must have pie!"]
     clear     <- UI.button #+ [string "Clear the canvas."]
     button    <- UI.button #+ [string "fetch points."]
+    readShape <- UI.button #+ [string "Read Shape"] 
 
     getBody window #+
         [ UI.div #. "wrapper" #+
@@ -96,6 +99,7 @@ setup window = do
                     , element drawMeshedTriangle2
                     , element button
                     , element drawMeshedCircleForce3
+                    , element readShape
                     , column[element clear
                     , element sliderMesh
                     , element sliderForce]
@@ -285,4 +289,13 @@ setup window = do
         forM_ listLiaisonex2 $ \[x,y] -> do
             canvas # UI.moveTo (zoomPoint (findIndex x (forInterface resultat2)) canvasSize)
             canvas # UI.lineTo (zoomPoint (findIndex y (forInterface resultat2)) canvasSize)
+        canvas # UI.stroke
+
+    on UI.click readShape $ const $ do
+        canvas # set' UI.strokeStyle "green"
+        canvas # UI.beginPath
+        let shape = read content :: Shape
+        forM_ (listLiaisonsShapeMaillage 5 shape) $ \[x,y] -> do
+            canvas # UI.moveTo (zoomPoint (findIndex x (forInterface (concat (shapePointsOnly 5 shape)))) canvasSize)
+            canvas # UI.lineTo (zoomPoint (findIndex y (forInterface (concat (shapePointsOnly 5 shape)))) canvasSize)
         canvas # UI.stroke
