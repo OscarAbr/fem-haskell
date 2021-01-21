@@ -11,8 +11,15 @@ data Shape = Circle Double Double Double
     | Inter Shape Shape
     | Union Shape Shape
     | Exclude Shape
-    | Mutual Shape Shape deriving(Show)
+    | Mutual Shape Shape deriving(Show,Read)
 
+
+l = Hole (Union (Union (Rectangle 3.0 2.0 4.0 3.0) (Rectangle 6.7 2.0 2.0 1.5))(Union (Circle 4.1 1.9 0.7) (Circle 7.1 1.9 0.7))) (Rectangle 4.0 3.0 2.7 1.5)
+
+
+
+l1  = show l
+l2 = read l1 :: Shape
 
 
 net :: Shape -> [[[Double]]] -> [[[Double]]]
